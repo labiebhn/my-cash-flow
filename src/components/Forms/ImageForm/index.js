@@ -9,7 +9,7 @@ export const ImageForm = ({ initValue, handleCamera }) => {
       <TouchableOpacity style={styles.button} onPress={handleCamera}>
         {
           initValue ? 
-          <Image source={ContentStruk} style={styles.image} />
+          <Image source={initValue} style={styles.image} />
           : <Icon style={styles.icon} fill="#C5CEE0" name="image-outline" />
         }
       </TouchableOpacity>

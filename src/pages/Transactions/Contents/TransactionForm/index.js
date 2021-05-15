@@ -1,32 +1,81 @@
 import React, { useState, useEffect } from 'react'
-import { Autocomplete, Button, IndexPath, Input, Layout, Radio, RadioGroup, Select, SelectItem, StyleService, Text, useStyleSheet } from '@ui-kitten/components'
+import { Autocomplete, Button, ButtonGroup, Card, Icon, IndexPath, Input, Layout, Modal, Radio, RadioGroup, Select, SelectItem, StyleService, Text, useStyleSheet } from '@ui-kitten/components'
 import { TransactionCamera } from '../../../../containers/TransactionsPage';
 import { AutocompleteForm, CurrencyForm, DatepickerForm, ImageForm } from '../../../../components/Forms';
 import { View, ScrollView } from 'react-native';
 import { useSelector } from 'react-redux';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
+
+const ImageIcon = (props) => (
+  <Icon {...props} name='image-2'/>
+);
+
+
+const CameraIcon = (props) => (
+  <Icon {...props} name='camera'/>
+);
 
 export const TransactionForm = ({ navigation }) => {
 
   const styles = useStyleSheet(themeStyle);
   const type = ['in', 'out', 'payable', 'receivable']
+  const options = {
+    mediaType: 'picture',
+    quality: 0.5
+  };
 
   // redux
   const reduxCode = useSelector(state => state.accountCodeReducer);
-  const reduxEvidence = useSelector(state => state.transactionReducer.evidence);
 
   // state
+  const [disabled, setDisabled] = useState(true);
+  const [modal, setModal] = useState(false);
   const [accountCode, setAccountCode] = useState([]);
   const [data, setData] = useState({
     amount: 0,
     type: 0,
     code: '',
     date: new Date(),
-    evidence: reduxEvidence,
+    evidence: '',
     detail: '',
   });
 
   // function
+  const handleOpenImageLibrary = () => {
+    setModal(false);
+    launchImageLibrary(options, response => {
+      if (response.didCancel) {
+        console.log('Cancel')
+      } else {
+        const image = {
+          uri: response.uri,
+          type: response.type,
+          name: response.fileName
+        }
+
+        setData({...data, evidence: image});
+      }
+    });
+  }
+
+  const handleOpenCamera = () => {
+    setModal(false);
+    launchCamera(options, response => {
+      if (response.didCancel) {
+        console.log('Cancel')
+      } else {
+        const image = {
+          uri: response.uri,
+          type: response.type,
+          name: response.fileName
+        }
+
+        setData({...data, evidence: image});
+      }
+    });
+  }
+
   const handleAccountCode = () => {
     switch (data.type) {
       case 0:
@@ -38,17 +87,16 @@ export const TransactionForm = ({ navigation }) => {
     }
   }
 
-  useEffect(() => {
-    setData({...data, evidence: reduxEvidence});
-    console.log(reduxEvidence);
-  }, [reduxEvidence]);
-
+  // handle type change
   useEffect(() => {
     handleAccountCode();
-    setData({...data, code: ''});
+    setData({ ...data, code: '' });
   }, [data.type]);
 
+  // handle disabled submit
   useEffect(() => {
+    const { amount, type, code, evidence, detail, date } = data;
+    setDisabled(amount && code && evidence && detail && date ? false : true)
     console.log(data);
   }, [data]);
 
@@ -60,9 +108,9 @@ export const TransactionForm = ({ navigation }) => {
     >
       <Layout style={styles.container}>
         <View style={styles.formGroup}>
-          <ImageForm 
+          <ImageForm
             initValue={data.evidence}
-            handleCamera={() => navigation.navigate('TransactionCamera')}
+            handleCamera={() => setModal(true)}
           />
         </View>
         <View style={styles.formGroup}>
@@ -99,17 +147,28 @@ export const TransactionForm = ({ navigation }) => {
           />
         </View>
         <View style={styles.formGroup}>
-          <Input 
+          <Input
             multiline={true}
             placeholder="Keterangan"
             value={data.detail}
-            onChangeText={e => setData({...data, detail: e})}
+            onChangeText={e => setData({ ...data, detail: e })}
           />
         </View>
         <View style={{ marginVertical: 8 }}>
-          <Button style={styles.submit}>Tambah Transaksi</Button>
-          <Button style={styles.submit} status="basic" >Reset</Button>
+          <Button style={styles.submit} disabled={disabled}>Tambah Transaksi</Button>
         </View>
+        <Modal
+          visible={modal}
+          backdropStyle={styles.backdrop}
+          onBackdropPress={() => setModal(false)}
+        >
+          <Card disabled={true}>
+            <ButtonGroup appearance='filled' status="basic">
+              <Button onPress={handleOpenImageLibrary} accessoryLeft={ImageIcon} />
+              <Button onPress={handleOpenCamera} accessoryLeft={CameraIcon} />
+            </ButtonGroup>
+          </Card>
+        </Modal>
       </Layout>
     </ScrollView>
   )
@@ -119,7 +178,7 @@ const themeStyle = StyleService.create({
   container: {
     flex: 1,
     padding: 8,
-    paddingBottom: 520
+    paddingBottom: 650
   },
   formGroup: {
     marginBottom: 8
@@ -145,5 +204,8 @@ const themeStyle = StyleService.create({
   },
   submit: {
     marginBottom: 4
-  }
+  },
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
 })
