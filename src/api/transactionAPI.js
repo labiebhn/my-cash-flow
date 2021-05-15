@@ -13,9 +13,13 @@ export const getTransactionPeriodAPI = async () => {
 }
 
 export const postTransactionAPI = async (data) => {
+  const fd = new FormData();
+  Object.keys(data).map(key => {
+    fd.append(key, data[key]);
+  });
   const token = await AsyncStorage.getItem('@token');
   return axios.post(`${host}/transaction/create`, 
-  data, 
+  fd, 
   config(token),);
 }
 

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Autocomplete, Button, ButtonGroup, Card, Icon, IndexPath, Input, Layout, Modal, Radio, RadioGroup, Select, SelectItem, StyleService, Text, useStyleSheet } from '@ui-kitten/components'
+import { Autocomplete, Button, ButtonGroup, Card, Icon, IndexPath, Input, Layout, Modal, Radio, RadioGroup, Select, SelectItem, Spinner, StyleService, Text, useStyleSheet } from '@ui-kitten/components'
 import { TransactionCamera } from '../../../../containers/TransactionsPage';
 import { AutocompleteForm, CurrencyForm, DatepickerForm, ImageForm } from '../../../../components/Forms';
 import { View, ScrollView } from 'react-native';
 import { useSelector } from 'react-redux';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { postTransactionAPI } from '../../../../api/transactionAPI';
 
 
 const ImageIcon = (props) => (
@@ -19,16 +20,18 @@ const CameraIcon = (props) => (
 export const TransactionForm = ({ navigation }) => {
 
   const styles = useStyleSheet(themeStyle);
-  const type = ['in', 'out', 'payable', 'receivable']
+  const type = ['out', 'in', 'payable', 'receivable']
   const options = {
     mediaType: 'picture',
     quality: 0.5
   };
 
   // redux
+  const user = useSelector(state => state.userReducer.data);
   const reduxCode = useSelector(state => state.accountCodeReducer);
 
   // state
+  const [load, setLoad] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const [modal, setModal] = useState(false);
   const [accountCode, setAccountCode] = useState([]);
@@ -39,6 +42,7 @@ export const TransactionForm = ({ navigation }) => {
     date: new Date(),
     evidence: '',
     detail: '',
+    createdBy: user.email
   });
 
   // function
@@ -85,6 +89,18 @@ export const TransactionForm = ({ navigation }) => {
         setAccountCode(reduxCode.in);
         break;
     }
+  }
+
+  const onSubmit = async () => {
+    setLoad(true);
+    const dataNew = {...data};
+    dataNew.type = type[dataNew.type]
+    try {
+      await postTransactionAPI(dataNew);
+    } catch(err) {
+      console.log(err);
+    }
+    setLoad(false);
   }
 
   // handle type change
@@ -155,7 +171,9 @@ export const TransactionForm = ({ navigation }) => {
           />
         </View>
         <View style={{ marginVertical: 8 }}>
-          <Button style={styles.submit} disabled={disabled}>Tambah Transaksi</Button>
+          <Button style={styles.submit} disabled={disabled} onPress={onSubmit}>
+            {!load ? 'Tambah Transaksi' : <Spinner status="basic" size="small" />}
+          </Button>
         </View>
         <Modal
           visible={modal}
