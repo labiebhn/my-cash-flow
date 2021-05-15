@@ -23,6 +23,8 @@ import {
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import * as eva from '@eva-design/eva';
 import { AppNavigator } from './routes';
+import { Provider } from "react-redux";
+import store from "./store"
 
 /**
  * Use any valid `name` property from eva icons (e.g `github`, or `heart-outline`)
@@ -35,13 +37,15 @@ export default () => {
     StatusBar.setBackgroundColor('#ffff');
     StatusBar.setBarStyle('dark-content');
   }, []);
-  
+
   return (
     <>
-      <IconRegistry icons={EvaIconsPack}/>
-      <ApplicationProvider {...eva} theme={eva.light}>
-        <AppNavigator />
-      </ApplicationProvider>
+      <IconRegistry icons={EvaIconsPack} />
+      <Provider store={store}>
+        <ApplicationProvider {...eva} theme={eva.light}>
+          <AppNavigator />
+        </ApplicationProvider>
+      </Provider>
     </>
   )
 };

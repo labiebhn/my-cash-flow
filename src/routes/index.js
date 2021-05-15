@@ -6,20 +6,22 @@ import { BottomNavigation, BottomNavigationTab, Icon, Layout, Text } from '@ui-k
 import Transactions from '../pages/Transactions';
 import Reports from '../pages/Reports';
 import Users from '../pages/Users';
+import Login from '../pages/Login';
+import TransactionCamera from '../containers/TransactionsPage/TransactionCamera';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator()
 
 const TransactionIcon = (props) => (
-  <Icon {...props} name='square'/>
+  <Icon {...props} name='home-outline'/>
 );
 
 const ReportIcon = (props) => (
-  <Icon {...props} name='archive'/>
+  <Icon {...props} name='archive-outline'/>
 );
 
 const UserIcon = (props) => (
-  <Icon {...props} name='person'/>
+  <Icon {...props} name='person-outline'/>
 );
 
 const BottomTabBar = ({ navigation, state }) => (
@@ -42,7 +44,9 @@ const TabNavigator = () => (
 
 const StackScreen = () => (
   <Stack.Navigator headerMode="none">
+    <Stack.Screen name="Login" component={Login} />
     <Stack.Screen name="Home" component={TabNavigator} />
+    <Stack.Screen name="TransactionCamera" component={TransactionCamera} />
   </Stack.Navigator>
 )
 
