@@ -19,7 +19,7 @@ export const DatepickerForm = ({ initValue, handler }) => {
     <Datepicker 
       placeholder='Tanggal Transaksi'
       date={initValue}
-      onSelect={handleChangeDate}
+      onSelect={nextDate => handler(nextDate)}
       accessoryRight={CalendarIcon}
     />
   )

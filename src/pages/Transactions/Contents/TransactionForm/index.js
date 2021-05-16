@@ -6,6 +6,8 @@ import { View, ScrollView } from 'react-native';
 import { useSelector } from 'react-redux';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { postTransactionAPI } from '../../../../api/transactionAPI';
+import { showMessage } from 'react-native-flash-message';
+import { ScreenLoader } from '../../../../components/Loaders';
 
 
 const ImageIcon = (props) => (
@@ -31,6 +33,7 @@ export const TransactionForm = ({ navigation }) => {
   const reduxCode = useSelector(state => state.accountCodeReducer);
 
   // state
+  const [done, setDone] = useState(false);
   const [load, setLoad] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const [modal, setModal] = useState(false);
@@ -95,9 +98,22 @@ export const TransactionForm = ({ navigation }) => {
     setLoad(true);
     const dataNew = {...data};
     dataNew.type = type[dataNew.type]
+    dataNew.date = (new Date(dataNew.date)).toUTCString();
     try {
       await postTransactionAPI(dataNew);
+      showMessage({
+        message: "Transaksi berhasil dicatat",
+        description: "Terimakasih telah mencatat transaksi ini",
+        type: "success",
+        duration: 5000
+      });
     } catch(err) {
+      showMessage({
+        message: "Transaksi gagal dicatat",
+        description: "Coba lagi",
+        type: "danger",
+        duration: 5000
+      });
       console.log(err);
     }
     setLoad(false);
@@ -116,7 +132,11 @@ export const TransactionForm = ({ navigation }) => {
     console.log(data);
   }, [data]);
 
-  return (
+  useEffect(() => {
+    setDone(true);
+  }, []);
+
+  return done ? (
     <ScrollView
       keyboardShouldPersistTaps="never"
       showsVerticalScrollIndicator={false}
@@ -189,7 +209,7 @@ export const TransactionForm = ({ navigation }) => {
         </Modal>
       </Layout>
     </ScrollView>
-  )
+  ) : <ScreenLoader />
 }
 
 const themeStyle = StyleService.create({

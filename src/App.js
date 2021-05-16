@@ -25,6 +25,7 @@ import * as eva from '@eva-design/eva';
 import { AppNavigator } from './routes';
 import { Provider } from "react-redux";
 import store from "./store"
+import FlashMessage from "react-native-flash-message";
 
 /**
  * Use any valid `name` property from eva icons (e.g `github`, or `heart-outline`)
@@ -44,6 +45,7 @@ export default () => {
       <Provider store={store}>
         <ApplicationProvider {...eva} theme={eva.light}>
           <AppNavigator />
+          <FlashMessage position="top" />
         </ApplicationProvider>
       </Provider>
     </>
