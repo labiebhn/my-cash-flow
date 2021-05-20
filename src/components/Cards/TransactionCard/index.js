@@ -5,7 +5,7 @@ import { FormatDateID } from '../../../utils';
 import { formatNumber } from 'react-native-currency-input';
 import { host } from '../../../api/config';
 
-export const TransactionCard = ({ id, detail, date, amount, email, status, image  }) => {
+export const TransactionCard = ({ id, detail, date, amount, email, status, image, handler  }) => {
 
   const styles = useStyleSheet(themeStyle);
 
@@ -14,13 +14,13 @@ export const TransactionCard = ({ id, detail, date, amount, email, status, image
   const Header = (props) => (
     <Image 
       {...props}
-      source={{uri: `${host}/${image}`}}
+      source={image}
       style={styles.image}
     />
   )
 
   return (
-      <Card style={styles.card} status={status ?? 'basic'} header={Header}>
+      <Card style={styles.card} status={status ?? 'basic'} header={Header} onPress={handler}>
         <View style={styles.detail}>
           <View style={styles.textContainer}>
             <Text category="h6">{id}</Text>

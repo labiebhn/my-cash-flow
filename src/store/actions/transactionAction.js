@@ -26,9 +26,9 @@ export const periodTransaction = data => {
   })
 }
 
-export const evidenceTransaction = data => {
+export const tabTransaction = data => {
   return ({
-    type: "EVIDENCE_TRANSACTION",
+    type: "TAB_TRANSACTION",
     payload: data
   })
 }

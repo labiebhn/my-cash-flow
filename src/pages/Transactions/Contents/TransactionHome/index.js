@@ -1,23 +1,31 @@
 import { Card, Layout, StyleService, Text, useStyleSheet } from '@ui-kitten/components'
 import React, { useEffect, useState } from 'react'
-import { ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { host } from '../../../../api/config';
 import { getTransactionAPI } from '../../../../api/transactionAPI';
 import { TransactionCard } from '../../../../components/Cards';
 import { ScreenLoader } from '../../../../components/Loaders';
+import { useDispatch, useSelector } from 'react-redux';
+import { addTransaction, periodTransaction, sumTransaction } from '../../../../store/actions/transactionAction';
+import { TransactionPreview } from '../../../../containers/TransactionsPage';
 
 export const TransactionHome = () => {
 
   const styles = useStyleSheet(themeStyle);
 
+  // redux
+  const dispatch = useDispatch();
+  const data = useSelector(state => state.transactionReducer.data);
+  const sum = useSelector(state => state.transactionReducer.sum);
+  const period = useSelector(state => state.transactionReducer.period);
+
   // state
-  const [data, setData] = useState(null);
-  const [sum, setSum] = useState(null);
-  const [period, setPeriod] = useState(null);
+  const [preview, setPreview] = useState(false);
+  const [index, setIndex] = useState(0);
 
   // function
   const generateStatus = (type) => {
-    switch(type) {
+    switch (type) {
       case 'in':
         return 'success'
       case 'out':
@@ -31,11 +39,16 @@ export const TransactionHome = () => {
     }
   }
 
+  const handleSelectCard = i => {
+    setIndex(i);
+    setPreview(true);
+  }
+
   const handleGetTransactionAPI = async () => {
     const transaction = await getTransactionAPI();
-    setData(transaction.data.data);
-    setSum(transaction.data.sum);
-    setPeriod(transaction.data.period);
+    dispatch(addTransaction(transaction.data.data));
+    dispatch(sumTransaction(transaction.data.sum));
+    dispatch(periodTransaction(transaction.data.period));
   }
 
   useEffect(() => {
@@ -46,8 +59,8 @@ export const TransactionHome = () => {
     <ScrollView>
       <Layout style={styles.container}>
         {
-          data.map(data => (
-            <TransactionCard 
+          data.map((data, i) => (
+            <TransactionCard
               key={data.id}
               id={data.id}
               detail={data.detail}
@@ -55,10 +68,17 @@ export const TransactionHome = () => {
               amount={data.amount}
               email={data.createdBy}
               status={generateStatus(data.type)}
-              image={data.evidence}
+              image={{uri: `${host}/${data.evidence}`}}
+              handler={() => handleSelectCard(i)}
             />
           ))
         }
+        <TransactionPreview 
+          data={data}
+          index={index}
+          visible={preview}
+          handleClose={() => setPreview(false)}
+        />
       </Layout>
     </ScrollView>
   ) : <ScreenLoader />
@@ -68,6 +88,12 @@ const themeStyle = StyleService.create({
   container: {
     flex: 1,
     padding: 8,
-    paddingBottom: 180
+    paddingBottom: 220
   },
+  header: {
+    padding: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  }
 })

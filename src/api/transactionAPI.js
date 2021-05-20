@@ -20,14 +20,18 @@ export const postTransactionAPI = async (data) => {
   const token = await AsyncStorage.getItem('@token');
   return axios.post(`${host}/transaction/create`, 
   fd, 
-  config(token),);
+  config(token));
 }
 
 export const updateTransactionAPI = async (data) => {
+  const fd = new FormData();
+  Object.keys(data).map(key => {
+    fd.append(key, data[key]);
+  });
   const token = await AsyncStorage.getItem('@token');
-  return axios.put(`${host}/transaction/update/${data.id}`, 
-  data, 
-  config(token),);
+  return axios.put(`${host}/transaction/update`, 
+  fd, 
+  config(token));
 }
 
 export const deleteTransactionAPI = async (id) => {

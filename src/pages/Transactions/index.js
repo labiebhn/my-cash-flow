@@ -1,12 +1,15 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Icon, Layout, StyleService, Tab, TabView, Text, useStyleSheet } from '@ui-kitten/components'
 import { TransactionChart, TransactionForm, TransactionHome } from './Contents';
 import { Dimensions } from 'react-native'
 import { AvatarList } from '../../components/Lists';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAccountCodeAPI } from '../../api/accountCodeAPI';
+import { addAccountCode } from '../../store/actions/accountCodeAction';
+import { tabTransaction } from '../../store/actions/transactionAction';
 
 const ChartIcon = (props) => (
-  <Icon {...props} name='trending-up'/>
+  <Icon {...props} name='pie-chart-outline'/>
 );
 
 const ViewIcon = (props) => (
@@ -19,12 +22,26 @@ const FormIcon = (props) => (
 
 const Transactions = ({ navigation }) => {
   const styles = useStyleSheet(themeStyles);
-
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
-  const shouldLoadComponent = (index) => index === selectedIndex;
-
+  
   // redux
+  const dispatch = useDispatch();
   const user = useSelector(state => state.userReducer.data);
+  const tab = useSelector(state => state.transactionReducer.tab);
+
+  // state
+  const shouldLoadComponent = (index) => index === tab;
+
+
+  // function
+  const handleGetAccountCode = async () => {
+    const code = await getAccountCodeAPI();
+    dispatch(addAccountCode(code.data.data));
+    console.log(code.data.data);
+  }
+
+  useEffect(() => {
+    handleGetAccountCode();
+  }, []);
 
   return (
     <>
@@ -33,9 +50,10 @@ const Transactions = ({ navigation }) => {
         role={user.role}
       />
       <TabView
-        selectedIndex={selectedIndex}
-        onSelect={index => setSelectedIndex(index)}
-        shouldLoadComponent={shouldLoadComponent}
+        selectedIndex={tab}
+        onSelect={index => dispatch(tabTransaction(index))}
+        // shouldLoadComponent={shouldLoadComponent}
+        swipeEnabled={false}
         style={styles.tabView}
       >
         <Tab icon={FormIcon}>
