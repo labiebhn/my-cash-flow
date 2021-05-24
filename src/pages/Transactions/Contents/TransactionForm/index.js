@@ -49,7 +49,6 @@ export const TransactionForm = ({ navigation }) => {
   }
 
   // state
-  const [done, setDone] = useState(false);
   const [load, setLoad] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const [data, setData] = useState(initData);
@@ -58,6 +57,7 @@ export const TransactionForm = ({ navigation }) => {
   const [modal, setModal] = useState(false);
   const [accountCode, setAccountCode] = useState(reduxCode.out);
   const [indexAccountCode, setIndexAccountCode] = useState(0);
+  const [disabledIndexUpdate, setDisabledIndexUpdate] = useState(false);
 
   // function
   const handleOpenImageLibrary = () => {
@@ -114,9 +114,15 @@ export const TransactionForm = ({ navigation }) => {
   useEffect(() => {
     handleAccountCode(); //return setAccountCode
   }, [data.type]);
-  // handle account code change
+
+  // handle accountCode change
   useEffect(() => {
-    setData({ ...data, code: accountCode[0].id });
+    if(!disabledIndexUpdate) {
+      setData({...data, code: accountCode[0].id});
+      setIndexAccountCode(0);
+    } else {
+      setDisabledIndexUpdate(false);
+    }
   }, [accountCode]);
 
   const handleGetTransactionAPI = async () => {
@@ -171,7 +177,6 @@ export const TransactionForm = ({ navigation }) => {
   }, [data]);
 
   // handle selected data for edit
-  
   useEffect(() => {
     if(selectData) {
       let selectDataNew = {...selectData};
@@ -180,9 +185,12 @@ export const TransactionForm = ({ navigation }) => {
       // generate index for selected form account code
       let idCode = reduxCode[type[indexType]].map(({id}) => id);
       setIndexAccountCode(idCode.indexOf(selectDataNew.code));
+      // set new account code list
+      setAccountCode(reduxCode[type[indexType]]);
+      // disabled accoundCode effect for updating value indexAccountCode
+      setDisabledIndexUpdate(true);
       // generate default value for form
       selectDataNew.date = new Date(selectDataNew.date);
-      selectDataNew.code = FindAccountCode(selectDataNew.code, reduxCode.data);
       selectDataNew.type = indexType;
       // handle image preview
       setImageString({uri: `${host}/${selectDataNew.evidence}`});
@@ -193,10 +201,10 @@ export const TransactionForm = ({ navigation }) => {
   }, [selectData]);
 
   useEffect(() => {
-    setDone(true);
-  }, []);
+    console.log('index account code: ', indexAccountCode);
+  }, [indexAccountCode]);
 
-  return done ? (
+  return (
     <ScrollView
       keyboardShouldPersistTaps="never"
       showsVerticalScrollIndicator={false}
@@ -237,8 +245,11 @@ export const TransactionForm = ({ navigation }) => {
         <View style={styles.formGroup}>
           <SelectForm 
             data={accountCode.map(code => code.title)}
-            onSelect={index => setData({ ...data, code: accountCode[index].id })}
-            defaultIndex={indexAccountCode}
+            onSelect={index => {
+              setData({ ...data, code: accountCode[index].id })
+              setIndexAccountCode(index);
+            }}
+            indexState={indexAccountCode}
           />
         </View>
         <View style={styles.formGroup}>
@@ -250,7 +261,7 @@ export const TransactionForm = ({ navigation }) => {
           />
         </View>
         <View style={{ marginVertical: 8 }}>
-          <Button style={styles.submit} disabled={disabled} onPress={onSubmit} status={isUpdate ? 'warning' : 'primary'}>
+          <Button style={styles.submit} disabled={disabled} onPress={onSubmit} status="primary">
             {!load ? isUpdate ? 'Ubah Transaksi' : 'Tambah Transaksi' : <Spinner status="basic" size="small" />}
           </Button>
           <Button style={styles.submit} status="basic" onPress={onReset}>
@@ -271,14 +282,14 @@ export const TransactionForm = ({ navigation }) => {
         </Modal>
       </Layout>
     </ScrollView>
-  ) : <ScreenLoader />
+  )
 }
 
 const themeStyle = StyleService.create({
   container: {
     flex: 1,
     padding: 8,
-    paddingBottom: 550
+    paddingBottom: 600
   },
   formGroup: {
     marginBottom: 8

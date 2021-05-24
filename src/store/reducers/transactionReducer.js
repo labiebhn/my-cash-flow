@@ -3,7 +3,8 @@ const initialState = {
   sum: null,
   selectData: null,
   period: null,
-  tab: 1
+  periodList: null,
+  tab: 0
 }
 
 const transactionReducer = (state = initialState, action) => {
@@ -28,6 +29,11 @@ const transactionReducer = (state = initialState, action) => {
       return {
         ...state,
         period: payload
+      }
+    case 'PERIOD_LIST_TRANSACTION':
+      return {
+        ...state,
+        periodList: payload
       }
     case 'TAB_TRANSACTION':
       return {

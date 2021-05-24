@@ -2,14 +2,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios"
 import { config, host } from "./config";
 
-export const getTransactionAPI = async () => {
+export const getTransactionAPI = async (params) => {
   const token = await AsyncStorage.getItem('@token');
-  return axios.get(`${host}/transaction/read`, config(token));
+  return axios.get(`${host}/transaction/read`, {params, headers: config(token).headers});
 }
 
-export const getTransactionPeriodAPI = async () => {
+export const getTransactionPeriodAPI = async (params) => {
   const token = await AsyncStorage.getItem('@token');
-  return axios.get(`${host}/transaction/read/period`, config(token));
+  return axios.get(`${host}/transaction/read/period`, {params, headers: config(token).headers});
 }
 
 export const postTransactionAPI = async (data) => {

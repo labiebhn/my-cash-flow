@@ -1,42 +1,31 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { IndexPath, Layout, Select, SelectGroup, SelectItem } from '@ui-kitten/components';
 
-export const SelectForm = ({ data = ['Option 1', 'Option 2'], defaultIndex = 0, onSelect }) => {
+export const SelectForm = ({ data = ['Option 1', 'Option 2'], indexState = 0, onSelect }) => {
 
-  const [selectedIndex, setSelectedIndex] = React.useState(new IndexPath(defaultIndex));
+  const [selectedIndex, setSelectedIndex] = useState(new IndexPath(indexState));
 
   const displayValue = data[selectedIndex.row];
 
-  const handleSelect = (index) => {
-    console.log('change index: ', index);
-    setSelectedIndex(index);
-    onSelect(index.row);
-  }
-
   const renderOption = (title) => (
-    <SelectItem key={title} title={title}/>
+    <SelectItem key={title} title={title} />
   );
 
   useEffect(() => {
-    setSelectedIndex(new IndexPath(defaultIndex));
-    onSelect(defaultIndex)
-  }, [defaultIndex]);
+    setSelectedIndex(new IndexPath(indexState));
+  }, [indexState]);
 
   return (
-    <Layout style={styles.container} level='1'>
-
-      <Select
-        style={styles.select}
-        placeholder='Default'
-        value={displayValue}
-        selectedIndex={selectedIndex}
-        onSelect={handleSelect}
-      >
-        {data.map(renderOption)}
-      </Select>
-
-    </Layout>
+    <Select
+      style={styles.select}
+      placeholder='Default'
+      value={displayValue}
+      selectedIndex={selectedIndex}
+      onSelect={({ row }) => onSelect(row)}
+    >
+      {data.map(renderOption)}
+    </Select>
   );
 };
 

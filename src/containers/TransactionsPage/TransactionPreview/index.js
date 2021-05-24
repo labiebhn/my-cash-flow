@@ -29,7 +29,7 @@ export const TransactionPreview = ({ data, index, visible, handleClose }) => {
   // **************** Navigation ********************
   const BackIcon = (props) => (
     <TouchableOpacity onPress={handleClose}>
-      <Icon {...props} name='arrow-back' />
+      <Icon {...props} name='arrow-ios-back-outline' />
     </TouchableOpacity>
   );
 

@@ -51,11 +51,7 @@ export const TransactionHome = () => {
     dispatch(periodTransaction(transaction.data.period));
   }
 
-  useEffect(() => {
-    handleGetTransactionAPI();
-  }, []);
-
-  return data ? (
+  return (
     <ScrollView>
       <Layout style={styles.container}>
         {
@@ -81,7 +77,7 @@ export const TransactionHome = () => {
         />
       </Layout>
     </ScrollView>
-  ) : <ScreenLoader />
+  )
 }
 
 const themeStyle = StyleService.create({
