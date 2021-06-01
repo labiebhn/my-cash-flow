@@ -21,7 +21,7 @@ export const TransactionPreview = ({ data, index, visible, handleClose }) => {
   // function
   const handleEdit = () => {
     dispatch(selectTransaction(data[indexState]));
-    dispatch(tabTransaction(0));
+    dispatch(tabTransaction(2));
     handleClose();
   }
 

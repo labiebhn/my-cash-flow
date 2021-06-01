@@ -34,8 +34,9 @@ export const TransactionForm = ({ navigation }) => {
   // redux
   const dispatch = useDispatch();
   const user = useSelector(state => state.userReducer.data);
-  const reduxCode = useSelector(state => state.accountCodeReducer);
-  const selectData = useSelector(state => state.transactionReducer.selectData);
+  const reduxCode = useSelector(state => state.accountCodeReducer.data);
+  const transaction = useSelector(state => state.transactionReducer);
+  const { selectData, period, clusterList } = transaction;
   
   const initData = {
     amount: 0,
@@ -44,6 +45,7 @@ export const TransactionForm = ({ navigation }) => {
     date: new Date(),
     evidence: '',
     detail: '',
+    cluster: '',
     createdBy: user.email,
     updatedBy: ''
   }
@@ -105,6 +107,12 @@ export const TransactionForm = ({ navigation }) => {
       case 1:
         setAccountCode(reduxCode.in);
         break;
+      case 2:
+        setAccountCode(reduxCode.payable);
+        break;
+      case 3:
+        setAccountCode(reduxCode.receivable);
+        break;
       default:
         setAccountCode(reduxCode.out);
         break;
@@ -118,7 +126,7 @@ export const TransactionForm = ({ navigation }) => {
   // handle accountCode change
   useEffect(() => {
     if(!disabledIndexUpdate) {
-      setData({...data, code: accountCode[0].id});
+      setData({...data, code: accountCode[0].code});
       setIndexAccountCode(0);
     } else {
       setDisabledIndexUpdate(false);
@@ -126,7 +134,11 @@ export const TransactionForm = ({ navigation }) => {
   }, [accountCode]);
 
   const handleGetTransactionAPI = async () => {
-    const transaction = await getTransactionAPI();
+    const params = {
+      month: period.month,
+      year: period.year
+    }
+    const transaction = await getTransactionAPI(params);
     dispatch(addTransaction(transaction.data.data));
     dispatch(sumTransaction(transaction.data.sum));
     dispatch(periodTransaction(transaction.data.period));
@@ -153,7 +165,7 @@ export const TransactionForm = ({ navigation }) => {
         message: `Transaksi berhasil ${isUpdate ? 'diubah' : 'dicatat'}`,
         description: `Terimakasih telah ${isUpdate ? 'mengubah' : 'mencatat'} transaksi ini`,
         type: "success",
-        duration: 3000
+        duration: 1500
       });
       // reset form
       onReset();
@@ -162,7 +174,7 @@ export const TransactionForm = ({ navigation }) => {
         message: `Transaksi gagal ${isUpdate ? 'diubah' : 'dicatat'}`,
         description: "Coba lagi",
         type: "danger",
-        duration: 3000
+        duration: 2000
       });
       console.log(err);
     }
@@ -183,7 +195,7 @@ export const TransactionForm = ({ navigation }) => {
       // find index type
       let indexType = type.indexOf(selectDataNew.type);
       // generate index for selected form account code
-      let idCode = reduxCode[type[indexType]].map(({id}) => id);
+      let idCode = reduxCode[type[indexType]].map(({code}) => code);
       setIndexAccountCode(idCode.indexOf(selectDataNew.code));
       // set new account code list
       setAccountCode(reduxCode[type[indexType]]);
@@ -242,11 +254,22 @@ export const TransactionForm = ({ navigation }) => {
             <Radio style={styles.radio} status="primary">Piutang</Radio>
           </RadioGroup>
         </View>
+        {
+          data.type === 2 || data.type === 3 ?
+          <View style={styles.formGroup}>
+            <AutocompleteForm 
+              placeholder={data.type === 2 ? 'Kreditur' : 'Debitur'}
+              initData={clusterList}
+              initValue={data.cluster}
+              handler={(e) => setData({...data, cluster: e})}
+            />
+          </View> : null
+        }
         <View style={styles.formGroup}>
           <SelectForm 
-            data={accountCode.map(code => code.title)}
+            data={accountCode.map(accountCode => accountCode.name)}
             onSelect={index => {
-              setData({ ...data, code: accountCode[index].id })
+              setData({ ...data, code: accountCode[index].code })
               setIndexAccountCode(index);
             }}
             indexState={indexAccountCode}
@@ -257,6 +280,7 @@ export const TransactionForm = ({ navigation }) => {
             multiline={true}
             placeholder="Keterangan"
             value={data.detail}
+            caption={data.type === 2 || data.type === 3 ? 'Note: Untuk hutang/piutang baru harap cantumkan tag "#Baru" pada kolom input Keterangan.' : ''}
             onChangeText={e => setData({ ...data, detail: e })}
           />
         </View>

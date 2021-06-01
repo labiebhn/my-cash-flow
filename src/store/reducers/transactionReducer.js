@@ -4,7 +4,8 @@ const initialState = {
   selectData: null,
   period: null,
   periodList: null,
-  tab: 0
+  tab: 0,
+  clusterList: [], //return array
 }
 
 const transactionReducer = (state = initialState, action) => {
@@ -39,6 +40,11 @@ const transactionReducer = (state = initialState, action) => {
       return {
         ...state,
         tab: payload
+      }
+    case 'CLUSTER_LIST_TRANSACTION':
+      return {
+        ...state,
+        clusterList: payload
       }
     default:
       return {

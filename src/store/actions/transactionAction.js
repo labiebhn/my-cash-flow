@@ -39,3 +39,10 @@ export const tabTransaction = data => {
     payload: data
   })
 }
+
+export const clusterListTransaction = data => {
+  return ({
+    type: "CLUSTER_LIST_TRANSACTION",
+    payload: data
+  })
+}

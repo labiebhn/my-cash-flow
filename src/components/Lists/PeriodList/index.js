@@ -26,6 +26,7 @@ export const PeriodList = () => {
   // function
   const generateDateID = ({ month, year }) => {
     let date = new Date();
+    date.setDate(1); //error handling for last date
     date.setMonth(month - 1);
     date.setFullYear(year);
 
@@ -38,6 +39,7 @@ export const PeriodList = () => {
     dispatch(addTransaction(transaction.data.data));
     dispatch(sumTransaction(transaction.data.sum));
     dispatch(periodTransaction(transaction.data.period));
+    setVisible(false);
     setLoad(false);
   }
 

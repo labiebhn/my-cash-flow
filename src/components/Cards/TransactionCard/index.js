@@ -3,7 +3,6 @@ import { Card, StyleService, Text, useStyleSheet } from '@ui-kitten/components'
 import { View, Image } from 'react-native';
 import { FormatDateID } from '../../../utils';
 import { formatNumber } from 'react-native-currency-input';
-import { host } from '../../../api/config';
 
 export const TransactionCard = ({ id, detail, date, amount, email, status, image, handler  }) => {
 
@@ -42,7 +41,7 @@ const themeStyle = StyleService.create({
   },
   image: {
     width: '100%',
-    height: 180,
+    height: 120,
   },
   detail: {
     flexDirection: 'row',

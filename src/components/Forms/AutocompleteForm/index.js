@@ -10,7 +10,7 @@ const movies = [
   { title: 'Interstellar' },
 ];
 
-const filter = (item, query) => item.title.toLowerCase().includes(query.toLowerCase());
+const filter = (item, query) => item.toLowerCase().includes(query.toLowerCase());
 
 export const AutocompleteForm = ({ placeholder, initValue, initData, handler }) => {
 
@@ -18,19 +18,18 @@ export const AutocompleteForm = ({ placeholder, initValue, initData, handler }) 
   const [data, setData] = useState(initData);
 
   const onSelect = (index) => {
-    setValue(initData[index].title);
     handler(initData[index]);
   };
 
   const onChangeText = (query) => {
-    setValue(query);
+    handler(query);
     setData(initData.filter(item => filter(item, query)));
   };
 
   const renderOption = (item, index) => (
     <AutocompleteItem
       key={index}
-      title={item.title}
+      title={item}
     />
   );
 
@@ -38,6 +37,10 @@ export const AutocompleteForm = ({ placeholder, initValue, initData, handler }) 
     setData(initData);
     setValue('');
   }, [initData]);
+
+  useEffect(() => {
+    setValue(initValue);
+  }, [initValue]);
 
   return (
     <Autocomplete

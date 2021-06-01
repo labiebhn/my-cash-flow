@@ -6,16 +6,17 @@ import { AvatarList, PeriodList } from '../../components/Lists';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAccountCodeAPI } from '../../api/accountCodeAPI';
 import { addAccountCode } from '../../store/actions/accountCodeAction';
-import { addTransaction, periodListTransaction, periodTransaction, sumTransaction, tabTransaction } from '../../store/actions/transactionAction';
+import { addTransaction, clusterListTransaction, periodListTransaction, periodTransaction, sumTransaction, tabTransaction } from '../../store/actions/transactionAction';
 import { ScreenLoader } from '../../components/Loaders';
 import { getTransactionAPI, getTransactionPeriodAPI } from '../../api/transactionAPI';
+import { getClusterAPI } from '../../api/clusterAPI';
 
 const ChartIcon = (props) => (
   <Icon {...props} name='pie-chart-outline'/>
 );
 
 const ViewIcon = (props) => (
-  <Icon {...props} name='activity'/>
+  <Icon {...props} name='cube-outline'/>
 );
 
 const FormIcon = (props) => (
@@ -28,8 +29,9 @@ const Transactions = ({ navigation }) => {
   // redux
   const dispatch = useDispatch();
   const user = useSelector(state => state.userReducer.data);
+  const accountCode = useSelector(state => state.accountCodeReducer.data);
   const transaction = useSelector(state => state.transactionReducer);
-  const { data, tab, period, periodList } = transaction;
+  const { data, tab, periodList, clusterList } = transaction;
 
   // state
   const shouldLoadComponent = (index) => index === tab;
@@ -53,33 +55,39 @@ const Transactions = ({ navigation }) => {
     dispatch(periodListTransaction(periodList.data.data));
   }
 
+  const handleGetClusterListAPI = async () => {
+    const clusterList = await getClusterAPI();
+    dispatch(clusterListTransaction(clusterList.data.data));
+  }
+
   useEffect(() => {
     handleGetAccountCode();
     handleGetTransactionAPI();
     handleGetPeriodListAPI();
+    handleGetClusterListAPI();
   }, []);
 
-  return data && periodList ? (
+  return data && periodList && accountCode && clusterList ? (
     <>
       <PeriodList />
       <TabView
         selectedIndex={tab}
         onSelect={index => dispatch(tabTransaction(index))}
         // shouldLoadComponent={shouldLoadComponent}
-        swipeEnabled={true}
+        swipeEnabled={false}
         style={styles.tabView}
       >
-        <Tab icon={ChartIcon} title="Grafik">
+        <Tab icon={ChartIcon} title="Grafik Transaksi">
           <Layout style={styles.tabContainer}>
             <TransactionChart />
           </Layout>
         </Tab>
-        <Tab icon={ViewIcon} title="List Transaksi">
+        <Tab icon={ViewIcon} title="Daftar Transaksi">
           <Layout style={styles.tabContainer}>
             <TransactionHome />
           </Layout>
         </Tab>
-        <Tab icon={FormIcon} title="Input Transaksi">
+        <Tab icon={FormIcon} title="Tambah Transaksi">
           <Layout style={styles.tabContainer}>
             <TransactionForm 
               navigation={navigation}
