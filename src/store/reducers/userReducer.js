@@ -1,5 +1,6 @@
 const initialState = {
   data: null,
+  super: ['Manager, Accountant, Finance']
 }
 
 const userReducer = (state = initialState, action) => {

@@ -9,10 +9,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addTransaction, periodTransaction, sumTransaction } from '../../../../store/actions/transactionAction';
 import { TransactionPreview } from '../../../../containers/TransactionsPage';
 
-const wait = (timeout) => {
-  return new Promise(resolve => setTimeout(resolve, timeout));
-}
-
 export const TransactionHome = () => {
 
   const styles = useStyleSheet(themeStyle);

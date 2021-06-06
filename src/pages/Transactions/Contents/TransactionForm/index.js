@@ -34,6 +34,7 @@ export const TransactionForm = ({ navigation }) => {
   // redux
   const dispatch = useDispatch();
   const user = useSelector(state => state.userReducer.data);
+  const superUser = useSelector(state => state.userReducer.super);
   const reduxCode = useSelector(state => state.accountCodeReducer.data);
   const transaction = useSelector(state => state.transactionReducer);
   const { selectData, period, clusterList } = transaction;
@@ -249,9 +250,14 @@ export const TransactionForm = ({ navigation }) => {
             style={styles.radioGroup}
           >
             <Radio style={styles.radio} status="primary">Kas Keluar</Radio>
-            <Radio style={styles.radio} status="primary">Kas Masuk</Radio>
-            <Radio style={styles.radio} status="primary">Utang</Radio>
-            <Radio style={styles.radio} status="primary">Piutang</Radio>
+            {
+              superUser.includes(user.role) ?
+              <>
+                <Radio style={styles.radio} status="primary">Kas Masuk</Radio>
+                <Radio style={styles.radio} status="primary">Utang</Radio>
+                <Radio style={styles.radio} status="primary">Piutang</Radio>
+              </> : <></>
+            }
           </RadioGroup>
         </View>
         {

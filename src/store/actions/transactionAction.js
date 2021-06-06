@@ -19,6 +19,13 @@ export const sumTransaction = data => {
   })
 }
 
+export const sumBalanceTransaction = data => {
+  return ({
+    type: "SUM_BALANCE_TRANSACTION",
+    payload: data
+  })
+}
+
 export const periodTransaction = data => {
   return ({
     type: "PERIOD_TRANSACTION",

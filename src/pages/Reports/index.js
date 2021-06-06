@@ -1,10 +1,12 @@
 import { Icon, Layout, StyleService, Tab, TabView, useStyleSheet } from '@ui-kitten/components'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { StyleSheet, Text, View, Dimensions } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux';
+import { getReportListAPI } from '../../api/reportAPI';
 import { PeriodList } from '../../components/Lists';
-import { tabReport } from '../../store/actions/reportAction';
-import { JournalReport } from './Contents';
+import { ScreenLoader } from '../../components/Loaders';
+import { listReport, tabReport } from '../../store/actions/reportAction';
+import { JournalReport, CashFlowReport, LedgerReport, TrialBalanceReport } from './Contents';
 
 const FileIcon = (props) => (
   <Icon {...props} name='folder-outline'/>
@@ -21,10 +23,21 @@ const Reports = ({ navigation }) => {
   // redux
   const dispatch = useDispatch();
   const tab = useSelector(state => state.reportReducer.tab);
+  const report = useSelector(state => state.reportReducer.report);
 
   const shouldLoadComponent = (index) => index === tab;
 
-  return (
+  // function
+  const handleGetReportListAPI = async () => {
+    const reportList = await getReportListAPI();
+    dispatch(listReport(reportList.data.data));
+  }
+
+  useEffect(() => {
+    handleGetReportListAPI();
+  }, []);
+
+  return report ? (
     <>
       {/* <PeriodList /> */}
       <TabView
@@ -39,24 +52,24 @@ const Reports = ({ navigation }) => {
             <JournalReport />
           </Layout>
         </Tab>
-        <Tab title="Neraca Saldo" icon={FileIcon}>
-          <Layout style={styles.tabContainer}>
-            <Text>Neraca Saldo</Text>
-          </Layout>
-        </Tab>
         <Tab title="Buku Besar" icon={FileIcon}>
           <Layout style={styles.tabContainer}>
-            <Text>Buku Besar </Text>
+            <LedgerReport />
+          </Layout>
+        </Tab>
+        <Tab title="Neraca Saldo" icon={FileIcon}>
+          <Layout style={styles.tabContainer}>
+            <TrialBalanceReport />
           </Layout>
         </Tab>
         <Tab title="Arus Kas" icon={FileIcon}>
           <Layout style={styles.tabContainer}>
-            <Text>Arus Kas </Text>
+            <CashFlowReport />
           </Layout>
         </Tab>
       </TabView>
     </>
-  )
+  ) : <ScreenLoader />
 }
 
 export default Reports;

@@ -1,6 +1,6 @@
 const initialState = {
   tab: 0,
-  journalList: null,
+  report: null,
 }
 
 const reportReducer = (state = initialState, action) => {
@@ -11,10 +11,10 @@ const reportReducer = (state = initialState, action) => {
         ...state,
         tab: payload
       }
-    case 'JOURNAL_LIST_REPORT':
+    case 'LIST_REPORT':
       return {
         ...state,
-        journalList: payload
+        report: payload
       }
     default:
       return {

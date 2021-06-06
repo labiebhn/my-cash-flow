@@ -8,39 +8,47 @@ import Reports from '../pages/Reports';
 import Users from '../pages/Users';
 import Login from '../pages/Login';
 import TransactionCamera from '../containers/TransactionsPage/TransactionCamera';
+import { useSelector } from 'react-redux';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator()
 
 const TransactionIcon = (props) => (
-  <Icon {...props} name='home-outline'/>
+  <Icon {...props} name='home-outline' />
 );
 
 const ReportIcon = (props) => (
-  <Icon {...props} name='archive-outline'/>
+  <Icon {...props} name='archive-outline' />
 );
 
 const UserIcon = (props) => (
-  <Icon {...props} name='person-outline'/>
+  <Icon {...props} name='person-outline' />
 );
 
-const BottomTabBar = ({ navigation, state }) => (
-  <BottomNavigation
-    selectedIndex={state.index}
-    onSelect={index => navigation.navigate(state.routeNames[index])}>
-    <BottomNavigationTab icon={TransactionIcon} />
-    <BottomNavigationTab icon={ReportIcon} />
-    <BottomNavigationTab icon={UserIcon} />
-  </BottomNavigation>
-);
+const BottomTabBar = ({ navigation, state }) => {
+  const user = useSelector(state => state.userReducer.data);
+  const superUser = useSelector(state => state.userReducer.super);
 
-const TabNavigator = () => (
-  <Tab.Navigator tabBar={props => <BottomTabBar {...props} />}>
-    <Tab.Screen name='Transactions' component={Transactions}/>
-    <Tab.Screen name='Reports' component={Reports}/>
-    <Tab.Screen name='Users' component={Users}/>
-  </Tab.Navigator>
-);
+  return (
+    <BottomNavigation
+      selectedIndex={state.index}
+      onSelect={index => navigation.navigate(state.routeNames[index])}>
+      <BottomNavigationTab icon={TransactionIcon} />
+      {superUser.includes(user.role) ? <BottomNavigationTab icon={ReportIcon} /> : <></>}
+      <BottomNavigationTab icon={UserIcon} />
+    </BottomNavigation>
+  )
+};
+
+const TabNavigator = () => {
+  return (
+    <Tab.Navigator tabBar={props => <BottomTabBar {...props} />}>
+      <Tab.Screen name='Transactions' component={Transactions} />
+      <Tab.Screen name='Reports' component={Reports} />
+      <Tab.Screen name='Users' component={Users} />
+    </Tab.Navigator>
+  )
+};
 
 const StackScreen = () => (
   <Stack.Navigator headerMode="none">
@@ -52,6 +60,6 @@ const StackScreen = () => (
 
 export const AppNavigator = () => (
   <NavigationContainer>
-    <StackScreen/>
+    <StackScreen />
   </NavigationContainer>
 );

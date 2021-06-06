@@ -1,6 +1,7 @@
 const initialState = {
   data: null,
   sum: null,
+  sumBalance: null,
   selectData: null,
   period: null,
   periodList: null,
@@ -25,6 +26,11 @@ const transactionReducer = (state = initialState, action) => {
       return {
         ...state,
         sum: payload
+      }
+    case 'SUM_BALANCE_TRANSACTION':
+      return {
+        ...state,
+        sumBalance: payload
       }
     case 'PERIOD_TRANSACTION':
       return {

@@ -25,10 +25,12 @@ const FormIcon = (props) => (
 
 const Transactions = ({ navigation }) => {
   const styles = useStyleSheet(themeStyles);
+
   
   // redux
   const dispatch = useDispatch();
   const user = useSelector(state => state.userReducer.data);
+  const superUser = useSelector(state => state.userReducer.super);
   const accountCode = useSelector(state => state.accountCodeReducer.data);
   const transaction = useSelector(state => state.transactionReducer);
   const { data, tab, periodList, clusterList } = transaction;
@@ -44,7 +46,7 @@ const Transactions = ({ navigation }) => {
   }
 
   const handleGetTransactionAPI = async () => {
-    const transaction = await getTransactionAPI();
+    const transaction = await getTransactionAPI({ email: user.email });
     dispatch(addTransaction(transaction.data.data));
     dispatch(sumTransaction(transaction.data.sum));
     dispatch(periodTransaction(transaction.data.period));
@@ -77,11 +79,14 @@ const Transactions = ({ navigation }) => {
         swipeEnabled={false}
         style={styles.tabView}
       >
-        <Tab icon={ChartIcon} title="Grafik Transaksi">
-          <Layout style={styles.tabContainer}>
-            <TransactionChart />
-          </Layout>
-        </Tab>
+        {
+          superUser.includes(user.role) ?
+          <Tab icon={ChartIcon} title="Grafik Transaksi">
+            <Layout style={styles.tabContainer}>
+              <TransactionChart />
+            </Layout>
+          </Tab> : null
+        }
         <Tab icon={ViewIcon} title="Daftar Transaksi">
           <Layout style={styles.tabContainer}>
             <TransactionHome />

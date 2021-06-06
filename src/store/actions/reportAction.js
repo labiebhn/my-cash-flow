@@ -5,9 +5,9 @@ export const tabReport = data => {
   })
 }
 
-export const journalListReport = data => {
+export const listReport = data => {
   return({
-    type: "JOURNAL_LIST_REPORT",
+    type: "LIST_REPORT",
     payload: data
   })
 }

@@ -3,10 +3,10 @@ import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, Linking } from 'react-native'
 import { useSelector } from 'react-redux';
 import { host } from '../../../../api/config';
-import { getJournalAPI } from '../../../../api/reportAPI';
+import { getTrialBalanceAPI } from '../../../../api/reportAPI';
 import { ScreenLoader } from '../../../../components/Loaders';
 
-export const JournalReport = () => {
+export const TrialBalanceReport = () => {
 
   // redux
   const data = useSelector(state => state.reportReducer.report);
@@ -17,7 +17,7 @@ export const JournalReport = () => {
   // function
   const onDownload = async (period) => {
     setLoad(true);
-    const res = await getJournalAPI(period);
+    const res = await getTrialBalanceAPI(period);
     Linking.openURL(`${host}/public/pdf/${res.data.data}`);
     setLoad(false);
   }
@@ -40,8 +40,8 @@ export const JournalReport = () => {
   const renderItem = ({ item, index }) => (
     <ListItem
       key={index}
-      title={`Jurnal_${item.month}_${item.year}.pdf`}
-      description={`Jurnal Umum`}
+      title={`Neraca Saldo_${item.month}_${item.year}.pdf`}
+      description={`Neraca Saldo`}
       disabled={load}
       accessoryLeft={renderItemIcon}
       accessoryRight={() => renderItemAccessory(item)}
