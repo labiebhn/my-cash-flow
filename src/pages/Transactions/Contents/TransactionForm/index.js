@@ -38,6 +38,8 @@ export const TransactionForm = ({ navigation }) => {
   const reduxCode = useSelector(state => state.accountCodeReducer.data);
   const transaction = useSelector(state => state.transactionReducer);
   const { selectData, period, clusterList } = transaction;
+
+  let disabledRadio = superUser.includes(user.role) ? false : true;
   
   const initData = {
     amount: 0,
@@ -135,9 +137,13 @@ export const TransactionForm = ({ navigation }) => {
   }, [accountCode]);
 
   const handleGetTransactionAPI = async () => {
-    const params = {
+    const params = superUser.includes(user.role) ? {
       month: period.month,
       year: period.year
+    } : {
+      month: period.month,
+      year: period.year,
+      email: user.email
     }
     const transaction = await getTransactionAPI(params);
     dispatch(addTransaction(transaction.data.data));
@@ -250,14 +256,9 @@ export const TransactionForm = ({ navigation }) => {
             style={styles.radioGroup}
           >
             <Radio style={styles.radio} status="primary">Kas Keluar</Radio>
-            {
-              superUser.includes(user.role) ?
-              <>
-                <Radio style={styles.radio} status="primary">Kas Masuk</Radio>
-                <Radio style={styles.radio} status="primary">Utang</Radio>
-                <Radio style={styles.radio} status="primary">Piutang</Radio>
-              </> : <></>
-            }
+            <Radio style={styles.radio} status="primary" disabled={disabledRadio}>Kas Masuk</Radio>
+            <Radio style={styles.radio} status="primary" disabled={disabledRadio}>Utang</Radio>
+            <Radio style={styles.radio} status="primary" disabled={disabledRadio}>Piutang</Radio>
           </RadioGroup>
         </View>
         {

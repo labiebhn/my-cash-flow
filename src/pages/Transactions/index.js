@@ -46,7 +46,7 @@ const Transactions = ({ navigation }) => {
   }
 
   const handleGetTransactionAPI = async () => {
-    const transaction = await getTransactionAPI({ email: user.email });
+    const transaction = await getTransactionAPI(superUser.includes(user.role) ? null : { email: user.email });
     dispatch(addTransaction(transaction.data.data));
     dispatch(sumTransaction(transaction.data.sum));
     dispatch(periodTransaction(transaction.data.period));

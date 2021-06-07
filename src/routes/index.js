@@ -9,6 +9,7 @@ import Users from '../pages/Users';
 import Login from '../pages/Login';
 import TransactionCamera from '../containers/TransactionsPage/TransactionCamera';
 import { useSelector } from 'react-redux';
+import { UserGeneralSetting, UserSecuritySetting } from '../pages/UserSetting';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator()
@@ -55,6 +56,8 @@ const StackScreen = () => (
     <Stack.Screen name="Login" component={Login} />
     <Stack.Screen name="Home" component={TabNavigator} />
     <Stack.Screen name="TransactionCamera" component={TransactionCamera} />
+    <Stack.Screen name="UserGeneralSetting" component={UserGeneralSetting} />
+    <Stack.Screen name="UserSecuritySetting" component={UserSecuritySetting} />
   </Stack.Navigator>
 )
 

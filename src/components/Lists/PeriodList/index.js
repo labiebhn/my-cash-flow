@@ -15,6 +15,8 @@ export const PeriodList = () => {
 
   // redux
   const dispatch = useDispatch();
+  const user = useSelector(state => state.userReducer.data);
+  const superUser = useSelector(state => state.userReducer.super);
   const transaction = useSelector(state => state.transactionReducer);
   const { period, periodList } = transaction;
 
@@ -33,7 +35,13 @@ export const PeriodList = () => {
     return FormatDateID(date);
   }
 
-  const handleGetTransactionAPI = async (params) => {
+  const handleGetTransactionAPI = async (period) => {
+    const params = superUser.includes(user.role) ? {
+      ...period,
+    } : {
+      ...period,
+      email: user.email
+    }
     setLoad(true);
     const transaction = await getTransactionAPI(params);
     dispatch(addTransaction(transaction.data.data));

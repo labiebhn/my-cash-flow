@@ -4,3 +4,10 @@ export const addUser = data => {
     payload: data
   })
 }
+
+export const tabUser = data => {
+  return ({
+    type: "TAB_USER",
+    payload: data
+  })
+}
