@@ -17,6 +17,11 @@ export const putUserAPI = async (data) => {
   return axios.put(`${host}/user/update/${data.id}`, fd, config(token));
 }
 
+export const putPasswordAPI = async (id, data) => {
+  const token = await AsyncStorage.getItem('@token');
+  return axios.put(`${host}/user/password/${id}`, data, config(token));
+}
+
 export const userLoginAPI = data => {
   return axios.post(`${host}/user/login`, data);
 }
