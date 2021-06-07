@@ -1,19 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button, Input, Layout, Spinner, StyleService, useStyleSheet } from '@ui-kitten/components'
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { View } from 'react-native'
 import { showMessage } from 'react-native-flash-message';
-import { useDispatch, useSelector } from 'react-redux';
-import { getUserByEmailAPI, putPasswordAPI } from '../../../api/userAPI';
+import { useSelector } from 'react-redux';
+import { putPasswordAPI } from '../../../api/userAPI';
 import { HeaderNavigation } from '../../../components/Navigations';
-import { addUser } from '../../../store/actions/userAction';
 
 export const UserSecuritySetting = ({ navigation }) => {
 
   const styles = useStyleSheet(themeStyles);
 
   // redux
-  const dispatch = useDispatch();
   const user = useSelector(state => state.userReducer.data);
 
   // state
