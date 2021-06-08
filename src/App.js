@@ -26,6 +26,7 @@ import { AppNavigator } from './routes';
 import { Provider } from "react-redux";
 import store from "./store"
 import FlashMessage from "react-native-flash-message";
+import SplashScreen from 'react-native-splash-screen';
 
 /**
  * Use any valid `name` property from eva icons (e.g `github`, or `heart-outline`)
@@ -37,6 +38,7 @@ export default () => {
   useEffect(() => {
     StatusBar.setBackgroundColor('#ffff');
     StatusBar.setBarStyle('dark-content');
+    SplashScreen.hide();
   }, []);
 
   return (
