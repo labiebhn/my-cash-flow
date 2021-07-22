@@ -12,6 +12,11 @@ export const getTransactionPeriodAPI = async (params) => {
   return axios.get(`${host}/transaction/read/period`, {params, headers: config(token).headers});
 }
 
+export const getTransactionSearchAPI = async (params) => {
+  const token = await AsyncStorage.getItem('@token');
+  return axios.get(`${host}/transaction/read/search`, {params, headers: config(token).headers});
+}
+
 export const postTransactionAPI = async (data) => {
   const fd = new FormData();
   Object.keys(data).map(key => {
