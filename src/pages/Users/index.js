@@ -11,7 +11,7 @@ import { UserSetting, UserTransaction } from './Contents'
 import ImageView from 'react-native-image-viewing'
 
 const ListIcon = (props) => (
-  <Icon {...props} name='keypad-outline'/>
+  <Icon {...props} name='activity-outline'/>
 );
 
 const SettingIcon = (props) => (
@@ -44,10 +44,10 @@ const Users = ({ navigation }) => {
         selectedIndex={tab}
         onSelect={index => dispatch(tabUser(index))}
         // shouldLoadComponent={shouldLoadComponent}
-        swipeEnabled={true}
+        swipeEnabled={false}
         style={styles.tabView}
       >
-        <Tab icon={ListIcon} title="Tranksaksi">
+        <Tab icon={ListIcon} title="Aktivitas Terbaru">
           <Layout style={styles.tabContainer}>
             <UserTransaction />
           </Layout>
