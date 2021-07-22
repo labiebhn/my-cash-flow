@@ -1,8 +1,8 @@
-import { Card, Layout, StyleService, Text, useStyleSheet } from '@ui-kitten/components'
+import { Card, Layout, StyleService, Text, useStyleSheet, Input } from '@ui-kitten/components'
 import React, { useEffect, useState, useCallback } from 'react'
-import { ScrollView, View, RefreshControl } from 'react-native';
+import { ScrollView, View, RefreshControl, FlatList } from 'react-native';
 import { host } from '../../../../api/config';
-import { getTransactionAPI } from '../../../../api/transactionAPI';
+import { getTransactionAPI, getTransactionSearchAPI } from '../../../../api/transactionAPI';
 import { TransactionCard } from '../../../../components/Cards';
 import { ScreenLoader } from '../../../../components/Loaders';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,6 +19,7 @@ export const TransactionHome = () => {
   const { data, period } = transaction;
 
   // state
+  const [dataMap, setDataMap] = useState(data);
   const [preview, setPreview] = useState(false);
   const [index, setIndex] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
@@ -57,6 +58,24 @@ export const TransactionHome = () => {
     setRefreshing(false)
   }
 
+  const handleSearchTransactionAPI = async (search) => {
+    const error = new Error('Promise cancel');
+    try {
+      if(search.length > 3) {
+        const transaction = await getTransactionSearchAPI({detail: search});
+        setDataMap(transaction.data.data);
+      } else {
+        setDataMap(data);
+        throw error;
+      }
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    setDataMap(data);
+  }, [data]);
 
   return (
     <ScrollView
@@ -68,23 +87,30 @@ export const TransactionHome = () => {
       }
     >
       <Layout style={styles.container}>
-        {
-          data.map((data, i) => (
+        <View style={styles.header}>
+          <Input 
+            placeholder="Cari transaksi.."
+            onChangeText={(e) => handleSearchTransactionAPI(e)}
+          />
+        </View>
+        <FlatList 
+          data={dataMap}
+          keyExtractor={item => item.id}
+          renderItem={({ item, index }) => (
             <TransactionCard
-              key={data.id}
-              id={data.id}
-              detail={data.detail}
-              date={data.date}
-              amount={data.amount}
-              email={data.createdBy}
-              status={generateStatus(data.type)}
-              image={{uri: `${host}/${data.evidence}`}}
-              handler={() => handleSelectCard(i)}
+              id={item.id}
+              detail={item.detail}
+              date={item.date}
+              amount={item.amount}
+              email={item.createdBy}
+              status={generateStatus(item.type)}
+              image={{uri: `${host}/${item.evidence}`}}
+              handler={() => handleSelectCard(index)}
             />
-          ))
-        }
+          )}
+        />
         <TransactionPreview 
-          data={data}
+          data={dataMap}
           index={index}
           visible={preview}
           handleClose={() => setPreview(false)}
@@ -101,9 +127,6 @@ const themeStyle = StyleService.create({
     paddingBottom: 260
   },
   header: {
-    padding: 8,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    paddingBottom: 8,
   }
 })
