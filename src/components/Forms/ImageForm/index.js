@@ -1,7 +1,7 @@
 import { Icon, Layout, Text } from '@ui-kitten/components'
 import React from 'react'
+import { View } from 'react-native'
 import { StyleSheet, TouchableOpacity, Image } from 'react-native'
-import { ContentStruk } from '../../../assets/images';
 
 export const ImageForm = ({ initValue, handleCamera }) => {
   return (
@@ -10,7 +10,11 @@ export const ImageForm = ({ initValue, handleCamera }) => {
         {
           initValue ? 
           <Image source={initValue} style={styles.image} />
-          : <Icon style={styles.icon} fill="#C5CEE0" name="image-outline" />
+          : 
+          <View style={{alignItems: 'center'}}>
+            <Icon style={styles.icon} fill="#C5CEE0" name="image-outline" />
+            <Text appearance="hint">Foto Bukti Transaksi</Text>
+          </View>
         }
       </TouchableOpacity>
     </Layout>
