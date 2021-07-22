@@ -12,9 +12,21 @@ const FileIcon = (props) => (
   <Icon {...props} name='folder-outline'/>
 );
 
+const JournalIcon = (props) => (
+  <Icon {...props} name='grid-outline' />
+)
+
+const LedgerIcon = (props) => (
+  <Icon {...props} name='book-open-outline' />
+)
+
 const BalanceIcon = (props) => (
-  <Icon {...props} name='file-text-outline'/>
+  <Icon {...props} name='bar-chart-outline'/>
 );
+
+const FlowIcon = (props) => (
+  <Icon {...props} name='swap-outline' />
+)
 
 const Reports = ({ navigation }) => {
 
@@ -47,22 +59,22 @@ const Reports = ({ navigation }) => {
         swipeEnabled={true}
         style={styles.tabView}
       >
-        <Tab title="Jurnal Umum" icon={FileIcon}>
+        <Tab title="Jurnal Umum" icon={JournalIcon}>
           <Layout style={styles.tabContainer}>
             <JournalReport />
           </Layout>
         </Tab>
-        <Tab title="Buku Besar" icon={FileIcon}>
+        <Tab title="Buku Besar" icon={LedgerIcon}>
           <Layout style={styles.tabContainer}>
             <LedgerReport />
           </Layout>
         </Tab>
-        <Tab title="Neraca Saldo" icon={FileIcon}>
+        <Tab title="Neraca Saldo" icon={BalanceIcon}>
           <Layout style={styles.tabContainer}>
             <TrialBalanceReport />
           </Layout>
         </Tab>
-        <Tab title="Arus Kas" icon={FileIcon}>
+        <Tab title="Arus Kas" icon={FlowIcon}>
           <Layout style={styles.tabContainer}>
             <CashFlowReport />
           </Layout>
