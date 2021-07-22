@@ -16,6 +16,10 @@ const SecurityIcon = (props) => (
   <Icon {...props} name='shield-outline'/>
 );
 
+const UserIcon = (props) => (
+  <Icon {...props} name='people-outline' />
+);
+
 const LogoutIcon = (props) => (
   <Icon {...props} name='log-out'/>
 );
@@ -49,6 +53,13 @@ export const UserSetting = ({ navigation }) => {
         accessoryLeft={SecurityIcon}
         accessoryRight={DirectIcon}
         onPress={() => navigation.navigate('UserSecuritySetting')}
+      />
+      <Divider />
+      <ListItem 
+        title={`Manajemen User`} 
+        accessoryLeft={UserIcon}
+        accessoryRight={DirectIcon}
+        onPress={() => navigation.navigate('UserManagementSetting')}
       />
       <Divider />
       <ListItem 
