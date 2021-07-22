@@ -2,17 +2,9 @@ import { Autocomplete, AutocompleteItem } from '@ui-kitten/components'
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
-const movies = [
-  { title: 'Star Wars' },
-  { title: 'Back to the Future' },
-  { title: 'The Matrix' },
-  { title: 'Inception' },
-  { title: 'Interstellar' },
-];
-
 const filter = (item, query) => item.toLowerCase().includes(query.toLowerCase());
 
-export const AutocompleteForm = ({ placeholder, initValue, initData, handler }) => {
+export const AutocompleteForm = ({ placeholder, initValue, initData, handler, onFocus }) => {
 
   const [value, setValue] = useState(initValue);
   const [data, setData] = useState(initData);
@@ -46,6 +38,7 @@ export const AutocompleteForm = ({ placeholder, initValue, initData, handler }) 
     <Autocomplete
       placeholder={placeholder}
       value={value}
+      onFocus={onFocus}
       onSelect={onSelect}
       onChangeText={onChangeText}>
       {data.map(renderOption)}
