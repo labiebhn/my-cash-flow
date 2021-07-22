@@ -18,6 +18,7 @@ export const UserTransaction = () => {
   const [data, setData] = useState(null);
   const [index, setIndex] = useState(0);
   const [preview, setPreview] = useState(false);
+  const [paginate, setPaginate] = useState(0);
 
   // function
   const generateStatus = (type) => {
@@ -54,8 +55,15 @@ export const UserTransaction = () => {
     handleGetTransactionAPI();
   }, [period]);
 
+  useEffect(() => {
+    console.log('paginate is: ', paginate);
+  }, [paginate]);
+
   return data ? (
-    <ScrollView>
+    <ScrollView
+      onScrollEndDrag={() => setPaginate(paginate + 1)}
+      // onMomentumScrollEnd={() => setPaginate(paginate + 1)}
+    >
       <View style={styles.container}>
         {
           data.map((data, i) => (
