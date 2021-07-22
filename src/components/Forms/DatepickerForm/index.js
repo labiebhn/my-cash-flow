@@ -6,7 +6,7 @@ const CalendarIcon = (props) => (
   <Icon {...props} name='calendar'/>
 );
 
-export const DatepickerForm = ({ initValue, handler }) => {
+export const DatepickerForm = ({ initValue, handler, onFocus }) => {
 
   const handleChangeDate = nextDate => {
     const date = new Date(nextDate);
@@ -21,6 +21,7 @@ export const DatepickerForm = ({ initValue, handler }) => {
       date={initValue}
       onSelect={nextDate => handler(nextDate)}
       accessoryRight={CalendarIcon}
+      onFocus={onFocus}
     />
   )
 }

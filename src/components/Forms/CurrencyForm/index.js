@@ -2,7 +2,7 @@ import { Layout, StyleService, Text, useStyleSheet } from '@ui-kitten/components
 import React, { useState } from 'react'
 import CurrencyInput, { formatNumber } from 'react-native-currency-input';
 
-export const CurrencyForm = ({ value, handler, placeholder }) => {
+export const CurrencyForm = ({ value, handler, placeholder, onFocus }) => {
 
   const styles = useStyleSheet(themeStyle);
 
@@ -19,7 +19,10 @@ export const CurrencyForm = ({ value, handler, placeholder }) => {
         precision={0}
         style={styles.input}
         placeholder={placeholder}
-        onFocus={e => setFocus(true)}
+        onFocus={e => {
+          setFocus(true)
+          onFocus?.();
+        }}
         onBlur={e => setFocus(false)}
       />
     </Layout>
