@@ -95,14 +95,14 @@ export const UserGeneralSetting = ({ navigation }) => {
             onChangeText={e => setData({ ...data, name: e })}
           />
         </View>
-        <View style={styles.formGroup}>
+        {/* <View style={styles.formGroup}>
           <Input
             label="Email"
             keyboardType="email-address"
             value={data.email}
             onChangeText={e => setData({ ...data, email: e })}
           />
-        </View>
+        </View> */}
         <Button
           status="primary"
           disabled={disabled}
