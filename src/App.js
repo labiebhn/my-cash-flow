@@ -11,7 +11,7 @@
  */
 
 import React, { useEffect } from 'react';
-import { StyleSheet, StatusBar } from 'react-native';
+import { StyleSheet, StatusBar, Alert } from 'react-native';
 import {
   ApplicationProvider,
   Button,
@@ -27,18 +27,35 @@ import { Provider } from "react-redux";
 import store from "./store"
 import FlashMessage from "react-native-flash-message";
 import SplashScreen from 'react-native-splash-screen';
+import messaging from '@react-native-firebase/messaging';
+import { CreateChannelNotification, Notification } from './utils';
+import PushNotification, { Importance } from 'react-native-push-notification';
 
 /**
  * Use any valid `name` property from eva icons (e.g `github`, or `heart-outline`)
  * https://akveo.github.io/eva-icons
  */
 
+ console.disableYellowBox = true;
+
 export default () => {
+
+  const showNotification = () => {
+    Notification({title: 'Hi there', message: 'Im body on here'});
+  }
 
   useEffect(() => {
     StatusBar.setBackgroundColor('#ffff');
     StatusBar.setBarStyle('dark-content');
     SplashScreen.hide();
+
+    CreateChannelNotification();
+
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+    // Unmount FCM if done
+    return unsubscribe;
   }, []);
 
   return (
@@ -48,6 +65,7 @@ export default () => {
         <ApplicationProvider {...eva} theme={eva.light}>
           <AppNavigator />
           <FlashMessage position="top" />
+          {/* <Button onPress={showNotification}>Show Notif</Button> */}
         </ApplicationProvider>
       </Provider>
     </>
