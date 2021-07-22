@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Autocomplete, Button, ButtonGroup, Card, Icon, IndexPath, Input, Layout, Modal, Radio, RadioGroup, Select, SelectItem, Spinner, StyleService, Text, useStyleSheet } from '@ui-kitten/components'
 import { AutocompleteForm, CurrencyForm, DatepickerForm, ImageForm, SelectForm } from '../../../../components/Forms';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Platform, PermissionsAndroid } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { getTransactionAPI, postTransactionAPI, updateTransactionAPI } from '../../../../api/transactionAPI';
@@ -53,6 +53,9 @@ export const TransactionForm = ({ navigation }) => {
     updatedBy: ''
   }
 
+  // ref
+  const scrollRef = useRef();
+
   // state
   const [load, setLoad] = useState(false);
   const [disabled, setDisabled] = useState(true);
@@ -83,22 +86,38 @@ export const TransactionForm = ({ navigation }) => {
     });
   }
 
-  const handleOpenCamera = () => {
+  const handleOpenCamera = async () => {
     setModal(false);
-    launchCamera(options, response => {
-      if (response.didCancel) {
-        console.log('Cancel')
-      } else {
-        const image = {
-          uri: response.uri,
-          type: response.type,
-          name: response.fileName
-        }
-
-        setImageString(null);
-        setData({...data, evidence: image});
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.CAMERA,
+      {
+        title: "Cash Flow Camera Permission",
+        message:
+          "Cash Flow needs access to your camera " +
+          "so you can take evidence of transaction.",
+        buttonNeutral: "Ask Me Later",
+        buttonNegative: "Cancel",
+        buttonPositive: "OK"
       }
-    });
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      launchCamera(options, response => {
+        if (response.didCancel) {
+          console.log('Cancel')
+        } else {
+          const image = {
+            uri: response.uri,
+            type: response.type,
+            name: response.fileName
+          }
+  
+          setImageString(null);
+          setData({...data, evidence: image});
+        }
+      });
+    } else {
+      console.log("Camera permission denied");
+    }
   }
 
   // handle type change
@@ -149,6 +168,10 @@ export const TransactionForm = ({ navigation }) => {
     dispatch(addTransaction(transaction.data.data));
     dispatch(sumTransaction(transaction.data.sum));
     dispatch(periodTransaction(transaction.data.period));
+  }
+
+  const onScroll = (y) => {
+    scrollRef.current?.scrollTo({x: 0, y: y, animated: true});
   }
 
   const onReset = () => {
@@ -223,8 +246,24 @@ export const TransactionForm = ({ navigation }) => {
     console.log('index account code: ', indexAccountCode);
   }, [indexAccountCode]);
 
+  useEffect(() => {
+    PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.CAMERA,
+      {
+        title: "Cash Flow Camera Permission",
+        message:
+          "Cash Flow needs access to your camera " +
+          "so you can take evidence of transaction.",
+        buttonNeutral: "Ask Me Later",
+        buttonNegative: "Cancel",
+        buttonPositive: "OK"
+      }
+    );
+  }, []);
+
   return (
     <ScrollView
+      ref={scrollRef}
       keyboardShouldPersistTaps="never"
       showsVerticalScrollIndicator={false}
       horizontal={false}
@@ -239,8 +278,9 @@ export const TransactionForm = ({ navigation }) => {
         <View style={styles.formGroup}>
           <CurrencyForm
             value={data.amount}
-            handler={e => setData({ ...data, amount: e })}
             placeholder="Nominal Transaksi"
+            onFocus={() => onScroll(220)}
+            handler={e => setData({ ...data, amount: e })}
           />
         </View>
         <View style={styles.formGroup}>
@@ -275,11 +315,11 @@ export const TransactionForm = ({ navigation }) => {
         <View style={styles.formGroup}>
           <SelectForm 
             data={accountCode.map(accountCode => accountCode.name)}
+            indexState={indexAccountCode}
             onSelect={index => {
               setData({ ...data, code: accountCode[index].code })
               setIndexAccountCode(index);
             }}
-            indexState={indexAccountCode}
           />
         </View>
         <View style={styles.formGroup}>
@@ -288,6 +328,7 @@ export const TransactionForm = ({ navigation }) => {
             placeholder="Keterangan"
             value={data.detail}
             caption={data.type === 2 || data.type === 3 ? 'Note: Untuk hutang/piutang baru harap cantumkan tag "#Baru" pada kolom input Keterangan.' : ''}
+            onFocus={() => onScroll(550)}
             onChangeText={e => setData({ ...data, detail: e })}
           />
         </View>
