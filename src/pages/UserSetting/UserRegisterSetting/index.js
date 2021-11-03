@@ -37,10 +37,10 @@ export const UserRegisterSetting = ({ navigation, route }) => {
   const handleFindRoleIndex = (role) => {
     let index = 0;
     switch(role) {
-      case 'Akuntan': 
+      case 'Accountant': 
         index = 0;
         break;
-      case 'Keuangan': 
+      case 'Finance': 
         index = 1;
         break;
       default: 
@@ -54,10 +54,10 @@ export const UserRegisterSetting = ({ navigation, route }) => {
     let role = '';
     switch(selectedRole) {
       case 0:
-        role = 'Akuntan';
+        role = 'Accountant';
         break;
       case 1:
-        role = 'Keuangan';
+        role = 'Finance';
         break;
       default:
         role = !isUpdate ? '' : params.data.role;
@@ -72,7 +72,7 @@ export const UserRegisterSetting = ({ navigation, route }) => {
     let description = '';
     switch(selectedRole) {
       case 0:
-        title = 'Akuntan';
+        title = 'Accountant';
         description = `
           - Dapat melihat grafik transaksi \n
           - Dapat melihat seluruh transaksi \n
@@ -84,14 +84,11 @@ export const UserRegisterSetting = ({ navigation, route }) => {
         `;
         break;
       case 1:
-        title = 'Keuangan';
+        title = 'Finance';
         description = `
           - Dapat melihat grafik transaksi \n
           - Dapat melihat seluruh transaksi \n
           - Dapat menginput seluruh jenis transaksi \n
-          - Dapat mengubah transaksi divisi nya saja \n
-          - Dapat menghapus transaksi divisi nya saja \n
-          - Dapat mengubah data akun sendiri
         `;
         break;
       case 2:
@@ -99,8 +96,6 @@ export const UserRegisterSetting = ({ navigation, route }) => {
         description = `
           - Dapat melihat transaksi divisi nya saja \n
           - Dapat menginput transaksi Kas Keluar \n
-          - Dapat mengubah transaksi divisi nya saja \n
-          - Dapat menghapus transaksi divisi nya saja \n
         `;
         break;
       default:
@@ -199,10 +194,10 @@ export const UserRegisterSetting = ({ navigation, route }) => {
                 onChange={index => setSelectedRole(index)}
               >
                 <Radio style={styles.radio}>
-                  Akuntan 
+                  Accountant
                 </Radio>
                 <Radio style={styles.radio}>
-                  Keuangan 
+                  Finance
                 </Radio>
                 <Radio style={styles.radio}>
                   Jabatan Lain..
