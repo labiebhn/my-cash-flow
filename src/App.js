@@ -39,23 +39,11 @@ import PushNotification, { Importance } from 'react-native-push-notification';
  console.disableYellowBox = true;
 
 export default () => {
-
-  const showNotification = () => {
-    Notification({title: 'Hi there', message: 'Im body on here'});
-  }
-
+  
   useEffect(() => {
     StatusBar.setBackgroundColor('#ffff');
     StatusBar.setBarStyle('dark-content');
     SplashScreen.hide();
-
-    CreateChannelNotification();
-
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-    });
-    // Unmount FCM if done
-    return unsubscribe;
   }, []);
 
   return (
@@ -65,7 +53,6 @@ export default () => {
         <ApplicationProvider {...eva} theme={eva.light}>
           <AppNavigator />
           <FlashMessage position="top" />
-          {/* <Button onPress={showNotification}>Show Notif</Button> */}
         </ApplicationProvider>
       </Provider>
     </>

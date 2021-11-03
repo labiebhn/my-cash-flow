@@ -1,12 +1,13 @@
 import { Card, Icon, Layout, StyleService, Text, TopNavigation, TopNavigationAction, useStyleSheet } from '@ui-kitten/components';
 import React, { useEffect, useState } from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, Platform } from 'react-native';
 import { FormatDateID, GenerateTypeTransaction } from '../../../utils';
 import ImageView from "react-native-image-viewing";
 import { host } from '../../../api/config';
 import { formatNumber } from 'react-native-currency-input';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectTransaction, tabTransaction } from '../../../store/actions/transactionAction';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const TransactionPreview = ({ data, index, visible, handleClose }) => {
 
@@ -14,6 +15,8 @@ export const TransactionPreview = ({ data, index, visible, handleClose }) => {
 
   // redux
   const dispatch = useDispatch();
+  const user = useSelector(state => state.userReducer.data);
+  const superUser = useSelector(state => state.userReducer.super);
 
   // state
   const [indexState, setIndexState] = useState(index);
@@ -50,12 +53,12 @@ export const TransactionPreview = ({ data, index, visible, handleClose }) => {
     <TopNavigationAction icon={BackIcon} />
   );
 
-  const RightAction = () => (
+  const RightAction = () => superUser.includes(user.role) ? (
     <>
       <TopNavigationAction icon={EditIcon} />
       <TopNavigationAction icon={DeleteIcon} />
     </>
-  )
+  ) : <View />
 
   const Navigation = ({ imageIndex }) => {
     let i = imageIndex;
@@ -79,12 +82,14 @@ export const TransactionPreview = ({ data, index, visible, handleClose }) => {
         <Text status="control" style={styles.text}>{GenerateTypeTransaction(data[i].type)} Rp{formatNumber(data[i].amount)}</Text>
         <Text status="control" style={styles.text}>{data[i].detail}</Text>
         <Text status="control" style={styles.text}>
-          <Icon name="plus-square-outline" fill="#ffff" style={[styles.icon, styles.iconCreate]} /> {data[i].createdBy}
+          { Platform.OS === 'android' ? <Icon name="plus-square-outline" fill="#ffff" style={[styles.icon, styles.iconCreate]} /> : 'Created by: ' }
+          {data[i].createdBy}
         </Text>
         {
           data[i].updatedBy ?
           <Text status="control" style={styles.text}>
-            <Icon name="edit-outline" fill="#ffff" style={[styles.icon, styles.iconUpdate]} /> {data[i].updatedBy}
+            { Platform.OS === 'android' ? <Icon name="edit-outline" fill="#ffff" style={[styles.icon, styles.iconUpdate]} /> : 'Updated by: ' }
+            {data[i].updatedBy}
           </Text> : null
         }
       </Layout>
@@ -108,6 +113,7 @@ export const TransactionPreview = ({ data, index, visible, handleClose }) => {
 
 const themeStyle = StyleService.create({
   footer: {
+    width: '100%',
     padding: 16,
     backgroundColor: '#0000007f'
   },
