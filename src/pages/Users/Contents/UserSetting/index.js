@@ -55,13 +55,19 @@ export const UserSetting = ({ navigation }) => {
         onPress={() => navigation.navigate('UserSecuritySetting')}
       />
       <Divider />
-      <ListItem 
-        title={`Manajemen User`} 
-        accessoryLeft={UserIcon}
-        accessoryRight={DirectIcon}
-        onPress={() => navigation.navigate('UserManagementSetting')}
-      />
-      <Divider />
+      {
+        user.role === 'Manager' && (
+          <>
+            <ListItem 
+              title={`Manajemen User`} 
+              accessoryLeft={UserIcon}
+              accessoryRight={DirectIcon}
+              onPress={() => navigation.navigate('UserManagementSetting')}
+            />
+            <Divider />
+          </>
+        )
+      }
       <ListItem 
         title={`Logout`} 
         accessoryLeft={LogoutIcon}
