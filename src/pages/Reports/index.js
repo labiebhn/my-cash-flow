@@ -47,7 +47,9 @@ const Reports = ({ navigation }) => {
   }
 
   useEffect(() => {
-    handleGetReportListAPI();
+    navigation.addListener('focus', () => {
+      handleGetReportListAPI();
+    });
   }, []);
 
   return  (
