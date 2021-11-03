@@ -41,6 +41,7 @@ export const updateTransactionAPI = async (data) => {
 
 export const deleteTransactionAPI = async (id) => {
   const token = await AsyncStorage.getItem('@token');
-  return axios.delete(`${host}/transaction/delete/${id}`, 
+  return axios.post(`${host}/transaction/delete`, 
+  { id: id },
   config(token),);
 }
