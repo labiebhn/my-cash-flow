@@ -7,6 +7,7 @@ import { host } from '../../../api/config';
 import { FloatingButton } from '../../../components/Buttons';
 import { ScreenLoader } from '../../../components/Loaders';
 import { showMessage } from 'react-native-flash-message';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const UserManagementSetting = ({ navigation }) => {
 
@@ -106,7 +107,7 @@ export const UserManagementSetting = ({ navigation }) => {
   )
 
   return (
-    <>
+    <SafeAreaView style={{ flex: 1 }}>
       <HeaderNavigation
         navigation={navigation}
         title="Manajemen User"
@@ -124,7 +125,7 @@ export const UserManagementSetting = ({ navigation }) => {
           />
         </Layout> : <ScreenLoader />
       } 
-    </>
+    </SafeAreaView>
   )
 }
 

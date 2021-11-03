@@ -10,6 +10,7 @@ import { addTransaction, clusterListTransaction, periodListTransaction, periodTr
 import { ScreenLoader } from '../../components/Loaders';
 import { getTransactionAPI, getTransactionPeriodAPI } from '../../api/transactionAPI';
 import { getClusterAPI } from '../../api/clusterAPI';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ChartIcon = (props) => (
   <Icon {...props} name='pie-chart-outline'/>
@@ -47,6 +48,7 @@ const Transactions = ({ navigation }) => {
 
   const handleGetTransactionAPI = async () => {
     const transaction = await getTransactionAPI(superUser.includes(user.role) ? null : { email: user.email });
+    console.log('TRANSACTION: ', transaction.data.data);
     dispatch(addTransaction(transaction.data.data));
     dispatch(sumTransaction(transaction.data.sum));
     dispatch(periodTransaction(transaction.data.period));
@@ -69,8 +71,8 @@ const Transactions = ({ navigation }) => {
     handleGetClusterListAPI();
   }, []);
 
-  return data && periodList && accountCode && clusterList ? (
-    <>
+  return data && accountCode ? (
+    <SafeAreaView>
       <PeriodList />
       <TabView
         selectedIndex={tab}
@@ -100,7 +102,7 @@ const Transactions = ({ navigation }) => {
           </Layout>
         </Tab>
       </TabView>
-    </>
+    </SafeAreaView>
   ) : <ScreenLoader />
 }
 

@@ -1,6 +1,7 @@
 import { Icon, Layout, StyleService, Tab, TabView, useStyleSheet } from '@ui-kitten/components'
 import React, { useEffect } from 'react'
 import { StyleSheet, Text, View, Dimensions } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { getReportListAPI } from '../../api/reportAPI';
 import { PeriodList } from '../../components/Lists';
@@ -49,8 +50,8 @@ const Reports = ({ navigation }) => {
     handleGetReportListAPI();
   }, []);
 
-  return report ? (
-    <>
+  return  (
+    <SafeAreaView>
       {/* <PeriodList /> */}
       <TabView
         selectedIndex={tab}
@@ -80,8 +81,8 @@ const Reports = ({ navigation }) => {
           </Layout>
         </Tab>
       </TabView>
-    </>
-  ) : <ScreenLoader />
+    </SafeAreaView>
+  )
 }
 
 export default Reports;

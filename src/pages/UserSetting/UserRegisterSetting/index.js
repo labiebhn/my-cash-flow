@@ -4,6 +4,7 @@ import { StyleSheet, View, ScrollView } from 'react-native';
 import { HeaderNavigation } from '../../../components/Navigations';
 import { showMessage } from 'react-native-flash-message';
 import { putUserAPI, registerUserAPI } from '../../../api/userAPI';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const initialState = {
   name: '',
@@ -153,7 +154,7 @@ export const UserRegisterSetting = ({ navigation, route }) => {
   }, [params]);
 
   return (
-    <>
+    <SafeAreaView style={{ flex: 1 }}>
       <HeaderNavigation
         navigation={navigation}
         title={!isUpdate ? 'Registrasi User' : 'Ubah Data User'}
@@ -233,7 +234,7 @@ export const UserRegisterSetting = ({ navigation, route }) => {
           </View>
         </ScrollView>
       </Layout>
-    </>
+    </SafeAreaView>
   )
 }
 

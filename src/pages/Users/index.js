@@ -9,6 +9,7 @@ import { PeriodList } from '../../components/Lists'
 import { tabUser } from '../../store/actions/userAction'
 import { UserSetting, UserTransaction } from './Contents'
 import ImageView from 'react-native-image-viewing'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const ListIcon = (props) => (
   <Icon {...props} name='activity-outline'/>
@@ -31,44 +32,46 @@ const Users = ({ navigation }) => {
   const [preview, setPreview] = useState(false);
 
   return (
-    <Layout style={styles.container}>
-      <PeriodList />
-      <AvatarCard 
-        role={data.role}
-        name={data.name}
-        email={data.email}
-        ava={{uri: `${host}/${data.ava}`}}
-        handler={() => setPreview(true)}
-      />
-      <TabView
-        selectedIndex={tab}
-        onSelect={index => dispatch(tabUser(index))}
-        // shouldLoadComponent={shouldLoadComponent}
-        swipeEnabled={false}
-        style={styles.tabView}
-      >
-        <Tab icon={ListIcon} title="Aktivitas Terbaru">
-          <Layout style={styles.tabContainer}>
-            <UserTransaction />
-          </Layout>
-        </Tab>
-        <Tab icon={SettingIcon} title="Pengaturan">
-          <Layout style={styles.tabContainer}>
-            <UserSetting 
-              navigation={navigation}
-            />
-          </Layout>
-        </Tab>
-      </TabView>
-      <ImageView 
-        images={[{uri: `${host}/${data.ava}`}]}
-        imageIndex={0}
-        animationType="slide"
-        swipeToCloseEnabled={false}
-        visible={preview}
-        onRequestClose={() => setPreview(false)}
-      />
-    </Layout>
+    <SafeAreaView>
+      <Layout style={styles.container}>
+        <PeriodList />
+        <AvatarCard 
+          role={data.role}
+          name={data.name}
+          email={data.email}
+          ava={{uri: `${host}/${data.ava}`}}
+          handler={() => setPreview(true)}
+        />
+        <TabView
+          selectedIndex={tab}
+          onSelect={index => dispatch(tabUser(index))}
+          // shouldLoadComponent={shouldLoadComponent}
+          swipeEnabled={false}
+          style={styles.tabView}
+        >
+          <Tab icon={ListIcon} title="Aktivitas Terbaru">
+            <Layout style={styles.tabContainer}>
+              <UserTransaction />
+            </Layout>
+          </Tab>
+          <Tab icon={SettingIcon} title="Pengaturan">
+            <Layout style={styles.tabContainer}>
+              <UserSetting 
+                navigation={navigation}
+              />
+            </Layout>
+          </Tab>
+        </TabView>
+        <ImageView 
+          images={[{uri: `${host}/${data.ava}`}]}
+          imageIndex={0}
+          animationType="slide"
+          swipeToCloseEnabled={false}
+          visible={preview}
+          onRequestClose={() => setPreview(false)}
+        />
+      </Layout>
+    </SafeAreaView>
   )
 }
 

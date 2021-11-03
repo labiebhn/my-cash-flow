@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { showMessage } from 'react-native-flash-message';
 import { launchImageLibrary } from 'react-native-image-picker';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { host } from '../../../api/config';
 import { getUserByEmailAPI, putUserAPI } from '../../../api/userAPI';
@@ -78,7 +79,7 @@ export const UserGeneralSetting = ({ navigation }) => {
   }, [data]);
 
   return (
-    <>
+    <SafeAreaView style={{ flex: 1 }}>
       <HeaderNavigation
         navigation={navigation}
         title="Pengaturan Umum"
@@ -111,7 +112,7 @@ export const UserGeneralSetting = ({ navigation }) => {
           {!load ? 'Submit' : <Spinner status="basic" size="small" />}
         </Button>
       </Layout>
-    </>
+    </SafeAreaView>
   )
 }
 

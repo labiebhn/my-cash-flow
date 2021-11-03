@@ -10,6 +10,7 @@ import Login from '../pages/Login';
 import TransactionCamera from '../containers/TransactionsPage/TransactionCamera';
 import { useSelector } from 'react-redux';
 import { UserGeneralSetting, UserManagementSetting, UserRegisterSetting, UserSecuritySetting } from '../pages/UserSetting';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator()
@@ -64,7 +65,9 @@ const StackScreen = () => (
 )
 
 export const AppNavigator = () => (
-  <NavigationContainer>
-    <StackScreen />
-  </NavigationContainer>
+  <SafeAreaProvider>
+    <NavigationContainer>
+      <StackScreen />
+    </NavigationContainer>
+  </SafeAreaProvider>
 );

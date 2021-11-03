@@ -3,6 +3,7 @@ import { Button, Input, Layout, Spinner, StyleService, useStyleSheet } from '@ui
 import React, { useState, useEffect } from 'react'
 import { View } from 'react-native'
 import { showMessage } from 'react-native-flash-message';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 import { putPasswordAPI } from '../../../api/userAPI';
 import { HeaderNavigation } from '../../../components/Navigations';
@@ -53,7 +54,7 @@ export const UserSecuritySetting = ({ navigation }) => {
   }, [data]);
 
   return (
-    <>
+    <SafeAreaView style={{ flex: 1 }}>
       <HeaderNavigation
         navigation={navigation}
         title="Pengaturan Keamanan"
@@ -81,7 +82,7 @@ export const UserSecuritySetting = ({ navigation }) => {
           {!load ? 'Ubah Password' : <Spinner status="basic" size="small" />}
         </Button>
       </Layout>
-    </>
+    </SafeAreaView>
   )
 }
 
